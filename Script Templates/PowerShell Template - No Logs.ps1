@@ -1,4 +1,4 @@
-#requires -version 4
+#requires -version 3
 <#
 .SYNOPSIS
   <Overview of script>
@@ -28,7 +28,7 @@
 #>
 
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
-
+[CmdletBinding()]
 Param (
   #Script parameters go here
 )
