@@ -1,4 +1,4 @@
-#requires -version 4
+#requires -version 3
 <#
 .SYNOPSIS
   <Overview of script>
@@ -28,8 +28,10 @@
 #>
 
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
-
+[CmdletBinding()]
 Param (
+  [string]$sLogPath = 'C:\Windows\Temp',
+  [string]$sLogName = 'psscriptlog.log'
   #Script parameters go here
 )
 
@@ -47,8 +49,6 @@ Import-Module PSLogging
 $sScriptVersion = '1.0'
 
 #Log File Info
-$sLogPath = 'C:\Windows\Temp'
-$sLogName = '<script_name>.log'
 $sLogFile = Join-Path -Path $sLogPath -ChildPath $sLogName
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
