@@ -1,19 +1,24 @@
-#requires -version 3
-<#
+﻿<#
 .SYNOPSIS
   <Overview of script>
 
 .DESCRIPTION
   <Brief description of script>
 
+.PARAMETER LogPath
+    Path to the folder for storing a log file. Cannot be used together with LogFile parameter
+
+.PARAMETER LogName
+    Name of a log file. Cannot be used together with LogFile parameter
+
 .PARAMETER <Parameter_Name>
-  <Brief description of parameter input required. Repeat this attribute if required>
+  <Brief description of parameter. Repeat this attribute if required>
 
 .INPUTS
   <Inputs if any, otherwise state None>
 
 .OUTPUTS Log File
-  The script log file stored in C:\Windows\Temp\<name>.log
+  The script log file stored in according to LogPath and LogName parameter values
 
 .NOTES
   Version:        1.0
@@ -27,64 +32,88 @@
   <Example goes here. Repeat this attribute for more than one example>
 #>
 
-#---------------------------------------------------------[Script Parameters]------------------------------------------------------
+#Requires -Version 3
+#Requires -Modules PSLogging
+
+#region [Script Parameters]
+#---------------------------------------------------------------------------------------------------------------
+
 [CmdletBinding()]
 Param (
-  [string]$sLogPath = 'C:\Windows\Temp',
-  [string]$sLogName = 'psscriptlog.log'
-  #Script parameters go here
+  [string]$LogPath = '$env:TEMP',
+  [string]$LogName = 'psscriptlog.log'
+  #Other script parameters go here, do not forget to add a comma after LogName parameter
 )
 
-#---------------------------------------------------------[Initialisations]--------------------------------------------------------
+#endregion
 
-#Set Error Action to Silently Continue
-$ErrorActionPreference = 'SilentlyContinue'
+begin
+{
+    #region [Initializations]
+    #-----------------------------------------------------------------------------------------------------------------
 
-#Import Modules & Snap-ins
-Import-Module PSLogging
+    #Set Error Action to Stop to allow error handling with try/catch
+    $ErrorActionPreference = 'Stop'
 
-#----------------------------------------------------------[Declarations]----------------------------------------------------------
+    #Import Modules & Snap-ins
 
-#Script Version
-$sScriptVersion = '1.0'
+    #endregion
 
-#Log File Info
-$sLogFile = Join-Path -Path $sLogPath -ChildPath $sLogName
+    #region [Declarations]
+    #--------------------------------------------------------------------------------------------------------------------
 
-#-----------------------------------------------------------[Functions]------------------------------------------------------------
+    #Script Version
+    $scriptVersion = '1.0'
 
-<#
+    #Log File Info
+    $logFile = Join-Path -Path $LogPath -ChildPath $LogName
 
-Function <FunctionName> {
-  Param ()
+    #endregion
 
-  Begin {
-    Write-LogInfo -LogPath $sLogFile -Message '<description of what is going on>...'
-  }
+    #region [Functions]
+    #-----------------------------------------------------------------------------------------------------------------------
 
-  Process {
-    Try {
-      <code goes here>
+    <#
+
+    Function <FunctionName> {
+      Param ()
+
+      Begin {
+        Write-LogInfo -LogPath $logFile -Message '<description of what is going on>...'
+      }
+
+      Process {
+        Try {
+          <code goes here>
+        }
+
+        Catch {
+          Write-LogError -LogPath $logFile -Message $_.Exception -ExitGracefully
+          Break
+        }
+      }
+
+      End {
+        If ($?) {
+          Write-LogInfo -LogPath $logFile -Message 'Completed Successfully.'
+          Write-LogInfo -LogPath $logFile -Message ' '
+        }
+      }
     }
 
-    Catch {
-      Write-LogError -LogPath $sLogFile -Message $_.Exception -ExitGracefully
-      Break
-    }
-  }
+    #>
 
-  End {
-    If ($?) {
-      Write-LogInfo -LogPath $sLogFile -Message 'Completed Successfully.'
-      Write-LogInfo -LogPath $sLogFile -Message ' '
-    }
-  }
+    #endregion
 }
 
-#>
+process
+{
+    #region [Execution]
+    #-----------------------------------------------------------------------------------------------------------------------
 
-#-----------------------------------------------------------[Execution]------------------------------------------------------------
+    Start-Log -LogPath $LogPath -LogName $LogName -ScriptVersion $scriptVersion
+    #Script Execution goes here
+    Stop-Log -LogPath $logFile
 
-Start-Log -LogPath $sLogPath -LogName $sLogName -ScriptVersion $sScriptVersion
-#Script Execution goes here
-Stop-Log -LogPath $sLogFile
+    #endregion
+}

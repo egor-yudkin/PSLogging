@@ -1,4 +1,3 @@
-#requires -version 3
 <#
 .SYNOPSIS
   <Overview of script>
@@ -27,55 +26,77 @@
   <Example goes here. Repeat this attribute for more than one example>
 #>
 
-#---------------------------------------------------------[Script Parameters]------------------------------------------------------
+#Requires -Version 3
+
+#region [Script Parameters]
+#---------------------------------------------------------------------------------------------------------------
+
 [CmdletBinding()]
 Param (
   #Script parameters go here
 )
 
-#---------------------------------------------------------[Initialisations]--------------------------------------------------------
+#endregion
 
-#Set Error Action to Silently Continue
-$ErrorActionPreference = 'SilentlyContinue'
+begin 
+{
+    #region [Initializations]
+    #-----------------------------------------------------------------------------------------------------------------
 
-#Import Modules & Snap-ins
+    #Set Error Action to Stop to allow error handling with try/catch
+    $ErrorActionPreference = 'Stop'
 
-#----------------------------------------------------------[Declarations]----------------------------------------------------------
+    #endregion
 
-#Any Global Declarations go here
+    #region [Declarations]
+    #--------------------------------------------------------------------------------------------------------------------
 
-#-----------------------------------------------------------[Functions]------------------------------------------------------------
+    #Any Global Declarations go here
 
-<#
+    #endregion
 
-Function <FunctionName> {
-  Param ()
+    #region [Functions]
+    #-----------------------------------------------------------------------------------------------------------------------
 
-  Begin {
-    Write-Host '<description of what is going on>...'
-  }
+    <#
 
-  Process {
-    Try {
-      <code goes here>
+    Function <FunctionName> {
+      Param ()
+
+      Begin {
+        Write-Host '<description of what is going on>...'
+      }
+
+      Process {
+        Try {
+          <code goes here>
+        }
+
+        Catch {
+          Write-Host -BackgroundColor Red "Error: $($_.Exception)"
+          Break
+        }
+      }
+
+      End {
+        If ($?) {
+          Write-Host 'Completed Successfully.'
+          Write-Host ' '
+        }
+      }
     }
 
-    Catch {
-      Write-Host -BackgroundColor Red "Error: $($_.Exception)"
-      Break
-    }
-  }
+    #>
 
-  End {
-    If ($?) {
-      Write-Host 'Completed Successfully.'
-      Write-Host ' '
-    }
-  }
+    #endregion
 }
 
-#>
+process
+{
+    #region [Execution]
+    #-----------------------------------------------------------------------------------------------------------------------
 
-#-----------------------------------------------------------[Execution]------------------------------------------------------------
+    #Script Execution goes here
 
-#Script Execution goes here
+    #endregion
+}
